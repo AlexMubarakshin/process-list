@@ -3,9 +3,15 @@ import { app, BrowserWindow } from "electron";
 let win: BrowserWindow | null;
 
 function createWindow() {
-    win = new BrowserWindow({ width: 800, height: 600 });
+    win = new BrowserWindow({
+        height: 600,
+        title: "Process list",
+        width: 800,
+    });
 
     win.loadFile("./app/index.html");
+
+    win.setMenu(null);
 
     win.on("closed", () => {
         win = null;
