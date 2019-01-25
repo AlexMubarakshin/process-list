@@ -3,6 +3,8 @@ import ProcessList from "ps-list";
 
 import { ProcessItem } from "./components/process-item";
 
+import { Table, TableHead, TableRow, TableCell } from "@material-ui/core";
+
 interface IAppProps {
 
 }
@@ -34,15 +36,17 @@ export class App extends React.Component<IAppProps, IAppState> {
 
     render() {
         return (
-            <table style={{border: 1, borderColor: "#000"}}>
-                <tr>
-                    <th>NAME</th>
-                    <th>PID</th>
-                    <th>PPID</th>
-                    <th>MEMORY</th>
-                    <th>CPU</th>
-                    <th>CPU</th>
-                </tr>
+            <Table>
+                <TableHead>
+                    <TableRow>
+                        <TableCell>NAME</TableCell>
+                        <TableCell>PID</TableCell>
+                        <TableCell>PPID</TableCell>
+                        <TableCell>MEMORY</TableCell>
+                        <TableCell>CPU</TableCell>
+                        <TableCell>CPU</TableCell>
+                    </TableRow>
+                </TableHead>
                 {
                     this.state.processes && this.state.processes.length ? (
                         this.state.processes.map(process => (
@@ -54,7 +58,7 @@ export class App extends React.Component<IAppProps, IAppState> {
                             <h2>Loading ...</h2>
                         )
                 }
-            </table>
+            </Table>
         );
     }
 }
