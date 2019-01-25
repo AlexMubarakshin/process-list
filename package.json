@@ -12,6 +12,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/ps-list": "^6.0.0",
     "@types/react": "^16.7.20",
     "@types/react-dom": "^16.0.11",
     "electron": "^4.0.2",
@@ -23,6 +24,7 @@
     "webpack-cli": "^3.2.1"
   },
   "dependencies": {
+    "ps-list": "^6.1.0",
     "react": "^16.7.0"
   }
 }

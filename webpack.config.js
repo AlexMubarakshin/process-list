@@ -21,13 +21,13 @@ const buildConfig = {
             }
         ],
     },
-    optimization: {
-        minimizer: [
-            new UglifyJsPlugin({
-                test: /\.js(\?.*)?$/i
-            }),
-        ]
-    }
+    // optimization: {
+    //     minimizer: [
+    //         new UglifyJsPlugin({
+    //             test: /\.js(\?.*)?$/i
+    //         }),
+    //     ]
+    // }
 };
 
 console.log(__dirname)
