@@ -1,4 +1,6 @@
-# Electron application
+# Process list
+
+Display opened processes
 
 ## Launch
 ```
