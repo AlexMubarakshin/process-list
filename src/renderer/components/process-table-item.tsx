@@ -15,9 +15,9 @@ export class ProcessItem extends React.PureComponent<IProcessItemProps> {
                 <TableCell className={"process-item--name"}>{process.name}</TableCell>
                 <TableCell className={"process-item--pid"}>{process.pid}</TableCell>
                 <TableCell className={"process-item--ppid"}>{process.ppid}</TableCell>
-                <TableCell className={"process-item--memory"}>{process.memory}</TableCell>
-                <TableCell className={"process-item--cpu"}>{process.cpu}</TableCell>
-                <TableCell className={"process-item--cmd"}>{process.cmd}</TableCell>
+                {process.memory && (<TableCell className={"process-item--memory"}>{process.memory}</TableCell>)}
+                {process.cpu && (<TableCell className={"process-item--cpu"}>{process.cpu}</TableCell>)}
+                {process.cmd && (<TableCell className={"process-item--cmd"}>{process.cmd}</TableCell>)}
             </TableRow>
         );
     }

@@ -1,16 +1,24 @@
 import * as React from "react";
 import ProcessList from "ps-list";
 
-import { ProcessItem } from "./components/process-item";
+import { platform } from "os";
 
-import { Table, TableHead, TableRow, TableCell } from "@material-ui/core";
 
-interface IAppProps {
+import { AppBar, Tabs, Tab } from "@material-ui/core";
 
+import { ProcessTable } from "./components/process-table";
+import { ProcessGraph } from "./components/process-graph";
+
+enum ApplicationTabs {
+    TABLE = "TABLE",
+    GRAPH = "GRAPH"
 }
 
+interface IAppProps { }
+
 interface IAppState {
-    processes?: ProcessList.ProcessDescriptor[];
+    processes: ProcessList.ProcessDescriptor[];
+    currentTab?: ApplicationTabs;
 }
 
 export class App extends React.Component<IAppProps, IAppState> {
@@ -19,7 +27,8 @@ export class App extends React.Component<IAppProps, IAppState> {
         super(props);
 
         this.state = {
-            processes: []
+            processes: [],
+            currentTab: ApplicationTabs.TABLE
         }
     }
 
@@ -34,31 +43,44 @@ export class App extends React.Component<IAppProps, IAppState> {
         });
     }
 
+    private handleChange = (event: React.ChangeEvent<{}>, value: any) => {
+        const nextTab: ApplicationTabs = ApplicationTabs[value] as ApplicationTabs;
+        this.setState({
+            currentTab: nextTab
+        })
+    }
+
     render() {
+        const isWindowsOS = platform() === "win32";
+        const { currentTab } = this.state;
+
         return (
-            <Table>
-                <TableHead>
-                    <TableRow>
-                        <TableCell>NAME</TableCell>
-                        <TableCell>PID</TableCell>
-                        <TableCell>PPID</TableCell>
-                        <TableCell>MEMORY</TableCell>
-                        <TableCell>CPU</TableCell>
-                        <TableCell>CPU</TableCell>
-                    </TableRow>
-                </TableHead>
+            <>
+                <AppBar position="static" >
+                    <Tabs
+                        centered
+                        value={currentTab}
+                        onChange={this.handleChange}>
+                        <Tab
+                            value={ApplicationTabs.TABLE}
+                            label={"Table"} />
+                        <Tab
+                            value={ApplicationTabs.GRAPH}
+                            label={"Graph"} />
+                    </Tabs>
+                </AppBar>
                 {
-                    this.state.processes && this.state.processes.length ? (
-                        this.state.processes.map(process => (
-                            <ProcessItem process={process} />
-                        ))
+                    this.state.currentTab === ApplicationTabs.TABLE ? (
+                        <ProcessTable
+                            isWindowsOS={isWindowsOS}
+                            processes={this.state.processes} />
                     )
                         :
                         (
-                            <h2>Loading ...</h2>
+                            <ProcessGraph processes={this.state.processes}/>
                         )
                 }
-            </Table>
+            </>
         );
     }
 }
