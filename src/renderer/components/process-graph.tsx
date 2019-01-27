@@ -8,6 +8,7 @@ interface IProcessGraphProps {
 }
 
 interface IProcessGraphState {
+    processes: { [pid: string]: ProcessList.ProcessDescriptor };
     data: any;
     config: any;
 }
@@ -15,10 +16,10 @@ interface IProcessGraphState {
 export class ProcessGraph extends React.Component<IProcessGraphProps, IProcessGraphState> {
     componentWillMount() {
         const processData = this.convertToGraph(this.props.processes);
-
         this.setState({
-            data: processData,
-            config: this.defaultGraphConfig
+            data: { nodes: processData.nodes, links: processData.links },
+            config: this.defaultGraphConfig,
+            processes: processData.processes
         });
 
         window.addEventListener("resize", this.onWindowResize);
@@ -41,35 +42,77 @@ export class ProcessGraph extends React.Component<IProcessGraphProps, IProcessGr
         })
     }
 
+    private onClickNode = (processID: number) => {
+        console.log(this.state.processes[processID]);
+    }
+
+    // For better work react-d3-graph with ID, because string better than number
+    private modifyProcessList = (processList: ProcessList.ProcessDescriptor[]) => {
+        const modifiedProcessList = [];
+        for (let pid = 0; pid < processList.length; pid++) {
+            const process = processList[pid];
+            (process as any).pid = `${process.pid}`;
+            (process as any).ppid = `${process.ppid}`;
+
+            modifiedProcessList.push(process);
+        }
+
+        return modifiedProcessList;
+    }
+
+
     private convertToGraph = (processes: ProcessList.ProcessDescriptor[]) => {
+        const modifyedProcessList = this.modifyProcessList(processes);
         const pids: { [pid: string]: ProcessList.ProcessDescriptor } = {}
-        for (let index = 0; index < processes.length; index++) {
-            const process = processes[index];
+        for (let index = 0; index < modifyedProcessList.length; index++) {
+            const process = modifyedProcessList[index];
             pids[process.pid] = process;
         }
-        const nodes = processes.map(process => ({ id: process.pid, label: process.name }));
-        const links = processes
-            .filter(process => (pids[process.ppid]))
+
+        const nodes = modifyedProcessList.map(process => {
+            const nodeConfig = { color: "#d3d3d3", symbolType: "circle" };
+
+            if ((process as any).pid === "0") {
+                nodeConfig.color = "#ba68c8";
+                nodeConfig.symbolType = "DIAMOND"
+            } else if (!pids[process.ppid]) {
+                nodeConfig.color = "#3f51b5";
+                nodeConfig.symbolType = "STAR"
+            }
+
+            return {
+                id: process.pid,
+                label: process.name,
+                symbolType: nodeConfig.symbolType,
+                color: nodeConfig.color
+            }
+        });
+
+        const links = modifyedProcessList
+            .filter(process => (!!pids[process.ppid]))
             .map(process => ({ source: process.ppid, target: process.pid }));
 
-        return { nodes, links };
+        return { nodes, links, processes: pids };
     }
 
     private defaultGraphConfig = {
         height: window.innerHeight,
         width: window.innerWidth,
+        directed: true,
+        nodeHighlightBehavior: true,
         node: {
-            labelProperty: "label"
+            labelProperty: "label",
+            highlightStrokeColor: "#9c27b0"
         }
     }
-
 
     render() {
         return (
             <Graph
+                id={"process-graph"}
                 config={this.state.config}
                 data={this.state.data}
-                id={"process-graph"}
+                onClickNode={this.onClickNode}
             />
         )
     }

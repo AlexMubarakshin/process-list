@@ -1,6 +1,7 @@
 declare module "react-d3-graph" {
 
     interface IGraphProps {
+        [key: string]: any;
         id: string;
         data: any;
         config?: any;
