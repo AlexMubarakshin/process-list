@@ -14,6 +14,7 @@ interface IProcessGraphState {
 }
 
 export class ProcessGraph extends React.Component<IProcessGraphProps, IProcessGraphState> {
+
     componentWillMount() {
         const processData = this.convertToGraph(this.props.processes);
         this.setState({
@@ -27,6 +28,15 @@ export class ProcessGraph extends React.Component<IProcessGraphProps, IProcessGr
 
     componentWillUnmount() {
         window.removeEventListener("resize", this.onWindowResize);
+    }
+
+    componentWillReceiveProps() {
+        const processData = this.convertToGraph(this.props.processes);
+        this.setState({
+            data: { nodes: processData.nodes, links: processData.links },
+            config: this.defaultGraphConfig,
+            processes: processData.processes
+        });
     }
 
     private onWindowResize = () => {
@@ -74,10 +84,10 @@ export class ProcessGraph extends React.Component<IProcessGraphProps, IProcessGr
 
             if ((process as any).pid === "0") {
                 nodeConfig.color = "#ba68c8";
-                nodeConfig.symbolType = "DIAMOND"
+                nodeConfig.symbolType = "DIAMOND";
             } else if (!pids[process.ppid]) {
                 nodeConfig.color = "#3f51b5";
-                nodeConfig.symbolType = "STAR"
+                nodeConfig.symbolType = "STAR";
             }
 
             return {
@@ -92,10 +102,12 @@ export class ProcessGraph extends React.Component<IProcessGraphProps, IProcessGr
             .filter(process => (!!pids[process.ppid]))
             .map(process => ({ source: process.ppid, target: process.pid }));
 
+        console.log("Graph data calculated");
         return { nodes, links, processes: pids };
     }
 
     private defaultGraphConfig = {
+        automaticRearrangeAfterDropNode: true,
         height: window.innerHeight,
         width: window.innerWidth,
         directed: true,
@@ -107,6 +119,7 @@ export class ProcessGraph extends React.Component<IProcessGraphProps, IProcessGr
     }
 
     render() {
+        console.log("Re-render graph");
         return (
             <Graph
                 id={"process-graph"}

@@ -32,15 +32,34 @@ export class App extends React.Component<IAppProps, IAppState> {
         }
     }
 
+    private timer: any;
+
     componentDidMount() {
         this.getProcessList();
+
+        this.setupProcessUpdateTimer();
     }
 
-    private getProcessList = async () => {
+    componentWillUnmount() {
+        clearInterval(this.timer);
+    }
+    
+    private setupProcessUpdateTimer = () => {
+        this.timer = setInterval(() => {
+            clearInterval(this.timer);
+            
+            this.getProcessList(() => {
+                this.setupProcessUpdateTimer();
+            })
+        }, 5000);
+        
+    }
+
+    private getProcessList = async (cb?: (() => void)) => {
         const processes = await ProcessList();
         this.setState({
             processes
-        });
+        }, cb);
     }
 
     private handleChange = (event: React.ChangeEvent<{}>, value: any) => {
