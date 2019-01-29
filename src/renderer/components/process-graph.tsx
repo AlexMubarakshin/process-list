@@ -102,7 +102,6 @@ export class ProcessGraph extends React.Component<IProcessGraphProps, IProcessGr
             .filter(process => (!!pids[process.ppid]))
             .map(process => ({ source: process.ppid, target: process.pid }));
 
-        console.log("Graph data calculated");
         return { nodes, links, processes: pids };
     }
 
@@ -119,7 +118,6 @@ export class ProcessGraph extends React.Component<IProcessGraphProps, IProcessGr
     }
 
     render() {
-        console.log("Re-render graph");
         return (
             <Graph
                 id={"process-graph"}
