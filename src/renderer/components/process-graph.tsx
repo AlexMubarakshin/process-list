@@ -18,9 +18,9 @@ export class ProcessGraph extends React.Component<IProcessGraphProps, IProcessGr
     componentWillMount() {
         const processData = this.convertToGraph(this.props.processes);
         this.setState({
-            data: { nodes: processData.nodes, links: processData.links },
             config: this.defaultGraphConfig,
-            processes: processData.processes
+            data: { nodes: processData.nodes, links: processData.links },
+            processes: processData.processes,
         });
 
         window.addEventListener("resize", this.onWindowResize);
@@ -33,9 +33,9 @@ export class ProcessGraph extends React.Component<IProcessGraphProps, IProcessGr
     componentWillReceiveProps() {
         const processData = this.convertToGraph(this.props.processes);
         this.setState({
-            data: { nodes: processData.nodes, links: processData.links },
             config: this.defaultGraphConfig,
-            processes: processData.processes
+            data: { nodes: processData.nodes, links: processData.links },
+            processes: processData.processes,
         });
     }
 
@@ -49,7 +49,7 @@ export class ProcessGraph extends React.Component<IProcessGraphProps, IProcessGr
                 height: windowHeight,
                 width: windowWidth
             }
-        })
+        });
     }
 
     private onClickNode = (processID: number) => {
@@ -70,16 +70,15 @@ export class ProcessGraph extends React.Component<IProcessGraphProps, IProcessGr
         return modifiedProcessList;
     }
 
-
     private convertToGraph = (processes: ProcessList.ProcessDescriptor[]) => {
         const modifyedProcessList = this.modifyProcessList(processes);
-        const pids: { [pid: string]: ProcessList.ProcessDescriptor } = {}
+        const pids: { [pid: string]: ProcessList.ProcessDescriptor } = {};
         for (let index = 0; index < modifyedProcessList.length; index++) {
             const process = modifyedProcessList[index];
             pids[process.pid] = process;
         }
 
-        const nodes = modifyedProcessList.map(process => {
+        const nodes = modifyedProcessList.map((process) => {
             const nodeConfig = { color: "#d3d3d3", symbolType: "circle" };
 
             if ((process as any).pid === "0") {
@@ -91,31 +90,31 @@ export class ProcessGraph extends React.Component<IProcessGraphProps, IProcessGr
             }
 
             return {
+                color: nodeConfig.color,
                 id: process.pid,
                 label: process.name,
-                symbolType: nodeConfig.symbolType,
-                color: nodeConfig.color
-            }
+                symbolType: nodeConfig.symbolType
+            };
         });
 
         const links = modifyedProcessList
-            .filter(process => (!!pids[process.ppid]))
-            .map(process => ({ source: process.ppid, target: process.pid }));
+            .filter((process) => (!!pids[process.ppid]))
+            .map((process) => ({ source: process.ppid, target: process.pid }));
 
         return { nodes, links, processes: pids };
     }
 
     private defaultGraphConfig = {
         automaticRearrangeAfterDropNode: true,
-        height: window.innerHeight,
-        width: window.innerWidth,
         directed: true,
-        nodeHighlightBehavior: true,
+        height: window.innerHeight,
         node: {
-            labelProperty: "label",
-            highlightStrokeColor: "#9c27b0"
-        }
-    }
+            highlightStrokeColor: "#9c27b0",
+            labelProperty: "label"
+        },
+        nodeHighlightBehavior: true,
+        width: window.innerWidth
+    };
 
     render() {
         return (
@@ -125,6 +124,6 @@ export class ProcessGraph extends React.Component<IProcessGraphProps, IProcessGr
                 data={this.state.data}
                 onClickNode={this.onClickNode}
             />
-        )
+        );
     }
 }

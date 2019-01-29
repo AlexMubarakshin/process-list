@@ -3,7 +3,6 @@ import ProcessList from "ps-list";
 
 import { platform } from "os";
 
-
 import { AppBar, Tabs, Tab } from "@material-ui/core";
 
 import { ProcessTable } from "./components/process-table";
@@ -27,9 +26,9 @@ export class App extends React.Component<IAppProps, IAppState> {
         super(props);
 
         this.state = {
-            processes: [],
-            currentTab: ApplicationTabs.TABLE
-        }
+            currentTab: ApplicationTabs.TABLE,
+            processes: []
+        };
     }
 
     private timer: any;
@@ -43,16 +42,16 @@ export class App extends React.Component<IAppProps, IAppState> {
     componentWillUnmount() {
         clearInterval(this.timer);
     }
-    
+
     private setupProcessUpdateTimer = () => {
         this.timer = setInterval(() => {
             clearInterval(this.timer);
-            
+
             this.getProcessList(() => {
                 this.setupProcessUpdateTimer();
-            })
+            });
         }, 5000);
-        
+
     }
 
     private getProcessList = async (cb?: (() => void)) => {
@@ -66,7 +65,7 @@ export class App extends React.Component<IAppProps, IAppState> {
         const nextTab: ApplicationTabs = ApplicationTabs[value] as ApplicationTabs;
         this.setState({
             currentTab: nextTab
-        })
+        });
     }
 
     render() {
@@ -94,10 +93,10 @@ export class App extends React.Component<IAppProps, IAppState> {
                             isWindowsOS={isWindowsOS}
                             processes={this.state.processes} />
                     )
-                        :
-                        (
-                            <ProcessGraph processes={this.state.processes}/>
-                        )
+                    :
+                    (
+                        <ProcessGraph processes={this.state.processes}/>
+                    )
                 }
             </>
         );
