@@ -30,10 +30,22 @@ export class ProcessGraph extends React.Component<IProcessGraphProps, IProcessGr
         window.removeEventListener("resize", this.onWindowResize);
     }
 
+    // componentDidMount() {
+    //     setTimeout(this.freezeGraph, 2400);
+    // }
+
+    private freezeGraph = () => {
+        this.setState({
+            config: {
+                ...this.state.config,
+                staticGraph: true
+            }
+        });
+    }
+
     componentWillReceiveProps() {
         const processData = this.convertToGraph(this.props.processes);
         this.setState({
-            config: this.defaultGraphConfig,
             data: { nodes: processData.nodes, links: processData.links },
             processes: processData.processes,
         });
@@ -105,7 +117,9 @@ export class ProcessGraph extends React.Component<IProcessGraphProps, IProcessGr
     }
 
     private defaultGraphConfig = {
-        automaticRearrangeAfterDropNode: true,
+        d3: {
+            gravity: -50
+        },
         directed: true,
         height: window.innerHeight,
         node: {

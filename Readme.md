@@ -1,6 +1,12 @@
 # Process list
 
-Display opened processes
+Show opened process as a graph
+
+<p align="center">
+  <img src="./screenshots/screen.png" alt="Screenshot"
+       width="70%">
+</p>
+
 
 ## Launch
 ```

@@ -9,8 +9,12 @@
     "build:watch": "./node_modules/.bin/webpack -w",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
-  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AlexMubarakshin/process-list"
+  },
+  "author": "Alex Mubarakshin",
+  "license": "MIT",
   "devDependencies": {
     "@types/ps-list": "^6.0.0",
     "@types/react": "^16.7.20",

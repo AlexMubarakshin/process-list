@@ -36,7 +36,7 @@ export class App extends React.Component<IAppProps, IAppState> {
     componentDidMount() {
         this.getProcessList();
 
-        this.setupProcessUpdateTimer();
+        // this.setupProcessUpdateTimer();
     }
 
     componentWillUnmount() {
